@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta httpequiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="theme-color" content="#000000"/>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preload" as="font" type="font/woff" href='/public/fonts/opensans800.woff' crossorigin="anonymous"/>
+        <link rel="preload" as="font" type="font/woff" href='/public/fonts/opensans400.woff' crossorigin="anonymous"/>
+        <link rel="stylesheet" href="/css/index.css">
+        <title>{{title}}</title>
+    </head>
+    <body>
+        <!-- Script to include all image urls to preload -->
+        <script id="imagesToPreload" type="application/json">
+            {{ collections.imagesToPreload | dump | safe }}
+        </script>
+        <main>
+            {{content | safe}}
+        </main>
+    </body>
+    <script src="/js/main.js"></script>
+</html>
+
+{# const dataElement = document.getElementById("imagesToPreload");
+if (!dataElement) {
+    console.log("dataElement is missing for imagesToPreload");
+    return;
+}
+const text = dataElement.textContent;
+if (!text) {
+    console.log("textContent is empty for imagesToPreload");
+    return;
+}
+const imageUrls = JSON.parse(text); #}

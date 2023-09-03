@@ -1,0 +1,35 @@
+//Theme variables
+:root {
+  --foreground-rgb: rgb(0, 0, 0);
+  --background-rgb: rgb(255, 255, 255);
+}
+
+// @media (prefers-color-scheme: dark) {
+// 	:root {
+// 		--foreground-rgb: 0, 0, 0;
+// 		--background-rgb: 255, 255, 255;
+// 	}
+// }
+
+// Common variables
+:root {
+  --shadow-1: 0 5px 15px rgba(0, 0, 0, 0.4);
+  --shadow-2: 0 5px 15px rgba(0, 0, 0, 0.2);
+
+  --callout-1-rgb: rgb(0, 0, 0);
+  --callout-2-rgb: rgb(255, 255, 255);
+
+  --easing-1: cubic-bezier(0.64, 0.02, 0.16, 0.97);
+
+  --font-size-0: 12px;
+  --font-size-1: 14px;
+  --font-size-2: 16px;
+
+  --t-1: 0.7s;
+
+  --s-1: 90px;
+  --s-2: 60px;
+  --s-3: 30px;
+  --s-4: 20px;
+  --s-5: 10px;
+}
