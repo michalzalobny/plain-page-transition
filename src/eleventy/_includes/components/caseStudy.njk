@@ -1,4 +1,10 @@
-<li style="margin-bottom: 50px; visibility:hidden">
-<a href="/case-study/{{ study.url }}">999qwdsa{{ study.title }}qweqwjrqweqw</a>
+<li class="case-study">
+  <a class="case-study__link" href="/case-study/{{ study.url }}">
+    <div class="case-study__wrapper">
+      <figure class="case-study__wrapper__figure">
+        <img src="{{ study.ogimage.thumb.url }}" alt="{{ study.title }}">
+      </figure>
+      <p class="case-study__wrapper__title">999qwdsa{{ study.title }}qweqwjrqweqw</p>
+    </div>
+  </a>
 </li>
-
