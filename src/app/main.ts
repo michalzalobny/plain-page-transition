@@ -1,6 +1,10 @@
 import { processUrl } from "./utils/processUrl";
 import { myFetch } from "./utils/myFetch";
-import { createCacheEntry, cache } from "./utils/createCacheEntry";
+import {
+  createCacheEntry,
+  isPageCached,
+  getPageFromCache,
+} from "./utils/createCacheEntry";
 import { parseDom } from "./utils/parseDom";
 import { findCurrentTarget } from "./utils/findCurrentTarget";
 
@@ -31,7 +35,7 @@ const onPrefetch = (e: Event) => {
 const preload = (url: string) => {
   const processedUrl = processUrl(url);
 
-  if (!cache.has(processedUrl.href)) {
+  if (!isPageCached(processedUrl.href)) {
     myFetch({
       url: processedUrl.href,
       shouldRunFallback: false,
@@ -41,31 +45,22 @@ const preload = (url: string) => {
 };
 
 const beforeFetch = (trigger = ""): Promise<void> => {
+  const targetPage = getPageFromCache(targetUrl.href);
+  const currentPage = getPageFromCache(currentUrl.href);
+
+  if (!targetPage || !currentPage) {
+    console.error("No target or current page found in cache");
+    return Promise.resolve();
+  }
+
   return new Promise((resolve) => {
-    //Add the new page to the DOM
-    const targetPage = cache.get(targetUrl.href);
-    if (!targetPage) {
-      console.error(`No ${targetUrl.href}`);
-      return;
-    }
-
-    //Remove the current page from the DOM
-    const currentPage = cache.get(currentUrl.href);
-    if (!currentPage) {
-      console.error(`No  ${targetUrl.href}`);
-      return;
-    }
-
-    const DOM = document.createElement("div");
-    DOM.innerHTML = targetPage.contentString;
-
-    wrapper.appendChild(DOM.firstElementChild!);
+    wrapper.appendChild(targetPage.DOM);
 
     const elToRemove = wrapper.querySelector(
       `[data-transition-content-id="${currentPage.title}"]`
     );
 
-    if (elToRemove) wrapper.removeChild(elToRemove);
+    if (elToRemove) elToRemove.remove();
 
     if (trigger !== "popstate") {
       window.history.pushState({}, "", targetPage.url);
@@ -79,6 +74,12 @@ const afterFetch = (trigger = ""): Promise<void> => {
   currentUrl = targetUrl;
   popTargetHref = currentUrl.href;
 
+  const targetPage = getPageFromCache(targetUrl.href);
+  if (!targetPage) {
+    console.error("No target page found in cache");
+    return Promise.resolve();
+  }
+
   return new Promise((resolve) => {
     // entry.renderer.update();
 
@@ -87,14 +88,6 @@ const afterFetch = (trigger = ""): Promise<void> => {
     //   to: entry,
     //   trigger,
     // });
-
-    const targetPage = cache.get(targetUrl.href);
-    if (!targetPage) {
-      console.error(
-        `No target page found in cache while fetching ${targetUrl.href}`
-      );
-      return;
-    }
 
     isTransitioning = false;
     isPopping = false;
@@ -113,7 +106,7 @@ const navigateTo = async (url: string, trigger = ""): Promise<void> => {
   targetUrl = processUrl(url);
   popTargetHref = window.location.href;
 
-  if (!cache.has(targetUrl.href)) {
+  if (!isPageCached(targetUrl.href)) {
     await myFetch({
       url: targetUrl.href,
       activePromises,

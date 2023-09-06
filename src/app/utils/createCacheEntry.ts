@@ -1,10 +1,9 @@
 import { processUrl } from "./processUrl";
 
 interface CacheEntry {
-  contentString: string;
+  DOM: Element;
   title: string;
   url: string;
-  rawUrl: string;
 }
 
 interface CreateCacheEntry {
@@ -12,7 +11,7 @@ interface CreateCacheEntry {
   url: string;
 }
 
-export const cache: Map<string, CacheEntry> = new Map();
+const cache: Map<string, CacheEntry> = new Map();
 
 export const createCacheEntry = (props: CreateCacheEntry) => {
   const { page, url } = props;
@@ -26,12 +25,33 @@ export const createCacheEntry = (props: CreateCacheEntry) => {
 
   const processedUrl = processUrl(url);
 
+  const div = document.createElement("div");
+  div.innerHTML = content!.outerHTML;
+  const DOM = div.firstElementChild!;
+
   const entry = {
-    contentString: content!.outerHTML,
+    DOM,
     url: processedUrl.href,
-    rawUrl: processedUrl.raw,
     title: page.title,
   };
 
   cache.set(processedUrl.href, entry);
+};
+
+export const getPageFromCache = (url: string) => {
+  const processedUrl = processUrl(url);
+
+  const entry = cache.get(processedUrl.href);
+
+  if (!entry) {
+    console.error(`No entry found in cache: ${processedUrl.href}`);
+    return null;
+  }
+
+  return entry;
+};
+
+export const isPageCached = (url: string) => {
+  const processedUrl = processUrl(url);
+  return cache.has(processedUrl.href);
 };
