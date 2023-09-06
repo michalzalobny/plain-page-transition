@@ -16,12 +16,15 @@
             {{ collections.imagesToPreload | dump | safe }}
         </script>
         <main>
-            {{content | safe}}
+            <div data-transition-main>
+                <div data-transition-content-id="{{title}}">
+                    {{content | safe}}
+                </div>
+            </div>
         </main>
     </body>
     <script src="/js/main.js"></script>
 </html>
-
 {# const dataElement = document.getElementById("imagesToPreload");
 if (!dataElement) {
     console.log("dataElement is missing for imagesToPreload");
