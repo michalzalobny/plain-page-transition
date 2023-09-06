@@ -1,6 +1,8 @@
 ---
 layout: "layouts/base.njk"
 permalink: case-study/{{caseStudy.url}}/index.html
+eleventyComputed:
+  title: "qweq{{ caseStudy.title }}qwe | Case"
 pagination:
   data: caseStudies
   size: 1
@@ -9,9 +11,12 @@ pagination:
 
 <div class="c-small">
   <div class="case-studies-page__wrapper">
-    <p class="case-studies-page__wrapper__title">qwedqw{{caseStudy.title}}dsadqwd</p>
+    <p class="case-studies-page__wrapper__title">qwedqw{{ caseStudy.title }}dsadqwd</p>
+    <a href="/">
+      Home
+    </a>
     <figure class="case-studies-page__wrapper__figure">
-      <img src="{{caseStudy.ogimage.url}}" alt="{{caseStudy.title}}">
+      <img src="{{ caseStudy.ogimage.url }}" alt="{{ caseStudy.title }}">
     </figure>
   </div>
 </div>
