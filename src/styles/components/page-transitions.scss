@@ -21,7 +21,7 @@
   }
 }
 
-[data-transition-loader] {
+[data-transition-indicator] {
   position: fixed;
   z-index: 10;
   top: 0;
@@ -34,7 +34,7 @@
   visibility: hidden;
 }
 
-.page-loader-indicator--active {
+.transition-indicator-active {
   transition: transform 1.2s;
   transition-timing-function: var(--easing-1);
   visibility: visible;

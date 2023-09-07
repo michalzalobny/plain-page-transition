@@ -16,7 +16,9 @@ let popTargetHref = "";
 let currentUrl = processUrl(window.location.href);
 let targetUrl = processUrl(window.location.href);
 const wrapper = document.querySelector("[data-transition-main]")!;
-const loadIndicator = document.querySelector("[data-transition-loader]")!;
+const transitionIndicator = document.querySelector(
+  "[data-transition-indicator]"
+)!;
 
 const initCache = () => {
   createCacheEntry({
@@ -56,7 +58,7 @@ const beforeFetch = (trigger = ""): Promise<void> => {
 
   return new Promise((resolve) => {
     wrapper.appendChild(targetPage.DOM);
-    loadIndicator.classList.add("page-loader-indicator--active");
+    transitionIndicator.classList.add("transition-indicator-active");
 
     const elToRemove = wrapper.querySelector(
       `[data-transition-content-id="${currentPage.title}"]`
@@ -68,7 +70,7 @@ const beforeFetch = (trigger = ""): Promise<void> => {
 
     setTimeout(() => {
       if (elToRemove) elToRemove.remove();
-      loadIndicator.classList.remove("page-loader-indicator--active");
+      transitionIndicator.classList.remove("transition-indicator-active");
 
       resolve();
     }, 1200);
