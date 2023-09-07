@@ -16,6 +16,7 @@ let popTargetHref = "";
 let currentUrl = processUrl(window.location.href);
 let targetUrl = processUrl(window.location.href);
 const wrapper = document.querySelector("[data-transition-main]")!;
+const loadIndicator = document.querySelector("[data-transition-loader]")!;
 
 const initCache = () => {
   createCacheEntry({
@@ -55,18 +56,22 @@ const beforeFetch = (trigger = ""): Promise<void> => {
 
   return new Promise((resolve) => {
     wrapper.appendChild(targetPage.DOM);
+    loadIndicator.classList.add("page-loader-indicator--active");
 
     const elToRemove = wrapper.querySelector(
       `[data-transition-content-id="${currentPage.title}"]`
     );
 
-    if (elToRemove) elToRemove.remove();
-
     if (trigger !== "popstate") {
       window.history.pushState({}, "", targetPage.url);
     }
 
-    resolve();
+    setTimeout(() => {
+      if (elToRemove) elToRemove.remove();
+      loadIndicator.classList.remove("page-loader-indicator--active");
+
+      resolve();
+    }, 1200);
   });
 };
 
@@ -126,6 +131,9 @@ const onPopstate = () => {
   if (isTransitioning || isPopping) {
     // overwrite history state with current page if currently navigating
     window.history.pushState({}, "", popTargetHref);
+
+    console.log(`poptarget : ${popTargetHref}`);
+
     console.warn("transitioning is in progress");
     return false;
   }
