@@ -11,6 +11,7 @@ import { globalState } from "../globalState";
 
 export const pageTransition = () => {
   const activePromises = new Map();
+  const savedScrollPositions = new Map();
 
   let isTransitioning = false;
   let isPopping = false;
@@ -132,6 +133,7 @@ export const pageTransition = () => {
     popTargetHref = window.location.href;
 
     document.body.classList.add("disable-scrolling");
+    savedScrollPositions.set(currentUrl.href, window.scrollY);
 
     if (!isPageCached(targetUrl.href)) {
       await myFetch({
@@ -144,6 +146,7 @@ export const pageTransition = () => {
     await afterFetch();
 
     document.body.classList.remove("disable-scrolling");
+    window.scrollTo(0, savedScrollPositions.get(targetUrl.href) || 0);
   };
 
   const onPopstate = () => {
