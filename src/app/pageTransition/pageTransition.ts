@@ -32,6 +32,14 @@ export const pageTransition = () => {
 
   initCache();
 
+  const currentPage = getPageFromCache(currentUrl.href)!;
+  const currentContentId = `[data-transition-content-id="${currentPage.title}"]`;
+
+  globalState.eventDispatcher.dispatchEvent({
+    type: "onPageEnter",
+    pageId: currentContentId,
+  });
+
   const onPrefetch = (e: Event) => {
     const currentTarget = findCurrentTarget(e);
     if (!currentTarget) return;
@@ -73,7 +81,7 @@ export const pageTransition = () => {
       }
 
       globalState.eventDispatcher.dispatchEvent({
-        type: "onPageChangeStart",
+        type: "onPageLeave",
         from: currentContentId,
         to: targetContentId,
         trigger,
@@ -103,6 +111,8 @@ export const pageTransition = () => {
       return Promise.resolve();
     }
 
+    const targetContentId = `[data-transition-content-id="${targetPage.title}"]`;
+
     return new Promise((resolve) => {
       // entry.renderer.update();
 
@@ -115,6 +125,12 @@ export const pageTransition = () => {
       isTransitioning = false;
       isPopping = false;
       document.title = targetPage.title;
+
+      globalState.eventDispatcher.dispatchEvent({
+        type: "onPageEnter",
+        pageId: targetContentId,
+      });
+
       resolve();
     });
   };

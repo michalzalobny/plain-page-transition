@@ -1,7 +1,8 @@
 import TWEEN, { Tween } from "@tweenjs/tween.js";
 
-import { Page, AnimateExit } from "../Page";
+import { Page, AnimateExit, AnimateEnter } from "../Page";
 import { getBoundingRectCustom } from "../../../utils/getBoundingRectCustom";
+import { Paragraph } from "../../../utils/Paragraph";
 
 export class LandingPage extends Page {
   _exitPageTween: Tween<{}> | null = null;
@@ -14,6 +15,8 @@ export class LandingPage extends Page {
     super.animateExit(props);
 
     const { fromEl, fromId, toEl, toId, trigger } = props;
+
+    this._animatedParagraphs.forEach((p) => p.animateOut());
 
     if (toId === "case-study") {
       if (trigger instanceof HTMLAnchorElement) {
@@ -52,8 +55,29 @@ export class LandingPage extends Page {
             fig.style.height = `${obj.height}px`;
             fig.style.transform = `translate(${obj.transX}px, ${obj.transY}px) scale(${obj.scaleFactor})`;
           })
-          .start();
+          .start()
+          .onComplete(() => {
+            this._animatedParagraphs.forEach((p) => p.destroy());
+            this._animatedParagraphs = [];
+          });
       }
+    }
+  }
+
+  animateEnter(props: AnimateEnter) {
+    super.animateEnter(props);
+    const { el, pageId } = props;
+
+    const paragraphs = el.querySelectorAll('[data-animation="paragraph"]');
+
+    if (pageId === "landing") {
+      Array.from(paragraphs).forEach((p) => {
+        this._animatedParagraphs.push(
+          new Paragraph({ element: p as HTMLElement })
+        );
+      });
+
+      this._animatedParagraphs.forEach((p) => p.animateIn());
     }
   }
 }

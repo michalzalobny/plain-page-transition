@@ -1,7 +1,15 @@
 import { CaseStudyPage } from "./pages/CaseStudyPage/CaseStudyPage";
 import { LandingPage } from "./pages/LandingPage/LandingPage";
 
+let landingPage: LandingPage;
+let caseStudyPage: CaseStudyPage;
+
 export const pageManager = () => {
-  const ladningPage = new LandingPage();
-  const caseStudyPage = new CaseStudyPage();
+  landingPage = new LandingPage();
+  caseStudyPage = new CaseStudyPage();
+};
+
+export const resizePages = () => {
+  landingPage.onResize();
+  caseStudyPage.onResize();
 };
