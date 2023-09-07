@@ -7,6 +7,7 @@ import {
 } from "./utils/createCacheEntry";
 import { parseDom } from "./utils/parseDom";
 import { findCurrentTarget } from "./utils/findCurrentTarget";
+import { globalState } from "../globalState";
 
 export const pageTransition = () => {
   const activePromises = new Map();
@@ -48,7 +49,9 @@ export const pageTransition = () => {
     }
   };
 
-  const beforeFetch = (trigger = ""): Promise<void> => {
+  const beforeFetch = (
+    trigger: string | HTMLAnchorElement = ""
+  ): Promise<void> => {
     const targetPage = getPageFromCache(targetUrl.href);
     const currentPage = getPageFromCache(currentUrl.href);
 
@@ -57,28 +60,39 @@ export const pageTransition = () => {
       return Promise.resolve();
     }
 
+    const targetContentId = `[data-transition-content-id="${targetPage.title}"]`;
+    const currentContentId = `[data-transition-content-id="${currentPage.title}"]`;
+
     return new Promise((resolve) => {
       wrapper.appendChild(targetPage.DOM);
       transitionIndicator.classList.add("transition-indicator-active");
-
-      const elToRemove = wrapper.querySelector(
-        `[data-transition-content-id="${currentPage.title}"]`
-      );
 
       if (trigger !== "popstate") {
         window.history.pushState({}, "", targetPage.url);
       }
 
+      globalState.eventDispatcher.dispatchEvent({
+        type: "onPageChangeStart",
+        from: currentContentId,
+        to: targetContentId,
+        trigger,
+      });
+
       setTimeout(() => {
+        const elToRemove = document.body.querySelector(currentContentId);
+
         if (elToRemove) elToRemove.remove();
         transitionIndicator.classList.remove("transition-indicator-active");
+
+        //scroll document to top
+        window.scrollTo(0, 0);
 
         resolve();
       }, 1200);
     });
   };
 
-  const afterFetch = (trigger = ""): Promise<void> => {
+  const afterFetch = (): Promise<void> => {
     currentUrl = targetUrl;
     popTargetHref = currentUrl.href;
 
@@ -104,7 +118,10 @@ export const pageTransition = () => {
     });
   };
 
-  const navigateTo = async (url: string, trigger = ""): Promise<void> => {
+  const navigateTo = async (
+    url: string,
+    trigger: string | HTMLAnchorElement = ""
+  ): Promise<void> => {
     if (isTransitioning) {
       throw new Error("Transition is in progress - no interruption allowed");
     }
@@ -122,7 +139,7 @@ export const pageTransition = () => {
     }
 
     await beforeFetch(trigger);
-    await afterFetch(trigger);
+    await afterFetch();
   };
 
   const onPopstate = () => {
@@ -134,8 +151,6 @@ export const pageTransition = () => {
     if (isTransitioning || isPopping) {
       // overwrite history state with current page if currently navigating
       window.history.pushState({}, "", popTargetHref);
-
-      console.log(`poptarget : ${popTargetHref}`);
 
       console.warn("transitioning is in progress");
       return false;
@@ -163,7 +178,7 @@ export const pageTransition = () => {
     }
 
     e.preventDefault();
-    navigateTo(clickedUrl.raw);
+    navigateTo(clickedUrl.raw, currentTarget);
   };
 
   wrapper.addEventListener("click", onClick);
@@ -172,7 +187,7 @@ export const pageTransition = () => {
 
   window.addEventListener("popstate", onPopstate);
 
-  // if ("scrollRestoration" in history) {
-  //   history.scrollRestoration = "manual";
-  // }
+  if ("scrollRestoration" in history) {
+    history.scrollRestoration = "manual";
+  }
 };
