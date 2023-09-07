@@ -2,7 +2,7 @@
 layout: "layouts/base.njk"
 permalink: case-study/{{caseStudy.url}}/index.html
 eleventyComputed:
-  title: "qweq{{ caseStudy.title }}qwe | Case"
+  title: "{{ caseStudy.title }} | Case"
   pageName: "case-study"
 pagination:
   data: caseStudies
@@ -12,7 +12,7 @@ pagination:
 
 <div class="c-small">
   <div class="case-studies-page__wrapper">
-    <p class="case-studies-page__wrapper__title">qwedqw{{ caseStudy.title }}dsadqwd</p>
+    <p class="case-studies-page__wrapper__title">{{ caseStudy.title }}</p>
     <a href="/">
       Home
     </a>

@@ -11,6 +11,7 @@
     align-items: center;
 
     &__figure {
+      flex-shrink: 0;
       width: 120px;
       position: relative;
 
@@ -33,6 +34,7 @@
 
     &__title {
       margin-left: 20px;
+      font-size: 14px;
     }
   }
 }
