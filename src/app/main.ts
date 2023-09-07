@@ -170,3 +170,7 @@ wrapper.addEventListener("mouseenter", onPrefetch, true);
 wrapper.addEventListener("focus", onPrefetch, true);
 
 window.addEventListener("popstate", onPopstate);
+
+// if ("scrollRestoration" in history) {
+//   history.scrollRestoration = "manual";
+// }
