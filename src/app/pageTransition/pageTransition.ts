@@ -131,6 +131,8 @@ export const pageTransition = () => {
     targetUrl = processUrl(url);
     popTargetHref = window.location.href;
 
+    document.body.classList.add("disable-scrolling");
+
     if (!isPageCached(targetUrl.href)) {
       await myFetch({
         url: targetUrl.href,
@@ -140,6 +142,8 @@ export const pageTransition = () => {
 
     await beforeFetch(trigger);
     await afterFetch();
+
+    document.body.classList.remove("disable-scrolling");
   };
 
   const onPopstate = () => {
@@ -190,4 +194,10 @@ export const pageTransition = () => {
   if ("scrollRestoration" in history) {
     history.scrollRestoration = "manual";
   }
+
+  const scrollBarWidth = window.innerWidth - document.body.offsetWidth;
+  document.documentElement.style.setProperty(
+    "--scroll-bar-width",
+    `${scrollBarWidth}px`
+  );
 };

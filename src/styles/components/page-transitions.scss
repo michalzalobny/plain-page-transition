@@ -41,3 +41,8 @@
   visibility: visible;
   transform: scaleX(1);
 }
+
+.disable-scrolling {
+  overflow: hidden;
+  padding-right: var(--scroll-bar-width);
+}
