@@ -8,15 +8,16 @@
   top: 0;
   left: 0;
   width: 100%;
+  background-color: white;
 
   &:last-child {
     z-index: -1;
-    background-color: rgb(174, 255, 174);
+    // background-color: rgb(174, 255, 174);
   }
 
   &:first-child {
     z-index: 1;
-    background-color: rgb(255, 101, 101);
+    // background-color: rgb(255, 101, 101);
     // opacity: 0.5;
   }
 }
