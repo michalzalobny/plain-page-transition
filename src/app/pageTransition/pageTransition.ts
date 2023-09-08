@@ -8,6 +8,7 @@ import {
 import { parseDom } from "./utils/parseDom";
 import { findCurrentTarget } from "./utils/findCurrentTarget";
 import { globalState } from "../globalState";
+import { generateHTMLContent } from "./utils/generateHTMLContent";
 
 export const pageTransition = () => {
   const activePromises = new Map();
@@ -74,7 +75,7 @@ export const pageTransition = () => {
     globalState.savedScrollPositions.set(currentContentId, window.scrollY);
 
     return new Promise((resolve) => {
-      wrapper.appendChild(targetPage.DOM);
+      wrapper.appendChild(generateHTMLContent(targetPage.htmlContent));
       transitionIndicator.classList.add("transition-indicator-active");
 
       if (trigger !== "popstate") {

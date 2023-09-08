@@ -1,7 +1,7 @@
 import { processUrl } from "./processUrl";
 
 interface CacheEntry {
-  DOM: Element;
+  htmlContent: string;
   title: string;
   url: string;
 }
@@ -15,22 +15,20 @@ const cache: Map<string, CacheEntry> = new Map();
 
 export const createCacheEntry = (props: CreateCacheEntry) => {
   const { page, url } = props;
-  const content = page.querySelector("[data-transition-content-id]");
+  let content = page.querySelector("[data-transition-content-id]");
 
   if (!content) {
     console.error(
       "No content found in page while creating cache entry - add a [data-transition-content-id] element to your page"
     );
+
+    content = document.createElement("div");
   }
 
   const processedUrl = processUrl(url);
 
-  const div = document.createElement("div");
-  div.innerHTML = content!.outerHTML;
-  const DOM = div.firstElementChild!;
-
   const entry = {
-    DOM,
+    htmlContent: content.outerHTML,
     url: processedUrl.href,
     title: page.title,
   };

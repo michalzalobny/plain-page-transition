@@ -87,9 +87,9 @@ export class CaseStudyPage extends Page {
           this._animatedParagraphs.forEach((p) => p.destroy());
           this._animatedParagraphs = [];
 
-          fig.style.width = figRect.width + "px";
-          fig.style.height = figRect.height + "px";
-          fig.style.transform = `translate(0px, 0px)`;
+          // fig.style.width = figRect.width + "px";
+          // fig.style.height = figRect.height + "px";
+          // fig.style.transform = `translate(0px, 0px)`;
 
           resolveFn();
         });

@@ -91,15 +91,15 @@ export class LandingPage extends Page {
           this._animatedParagraphs.forEach((p) => p.destroy());
           this._animatedParagraphs = [];
 
-          figsArr.forEach((f) => {
-            const child = f.children[0] as HTMLElement;
-            if (!child) return console.log("no child");
-            child.classList.remove("figure-img-case-study--out");
-          });
+          // figsArr.forEach((f) => {
+          //   const child = f.children[0] as HTMLElement;
+          //   if (!child) return console.log("no child");
+          //   child.classList.remove("figure-img-case-study--out");
+          // });
 
-          fig.style.width = figRect.width + "px";
-          fig.style.height = figRect.height + "px";
-          fig.style.transform = `translate(0px, 0px)`;
+          // fig.style.width = figRect.width + "px";
+          // fig.style.height = figRect.height + "px";
+          // fig.style.transform = `translate(0px, 0px)`;
 
           resolveFn();
         });
