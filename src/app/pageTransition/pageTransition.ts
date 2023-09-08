@@ -11,7 +11,6 @@ import { globalState } from "../globalState";
 
 export const pageTransition = () => {
   const activePromises = new Map();
-  const savedScrollPositions = new Map();
 
   let isTransitioning = false;
   let isPopping = false;
@@ -72,6 +71,8 @@ export const pageTransition = () => {
     const targetContentId = `[data-transition-content-id="${targetPage.title}"]`;
     const currentContentId = `[data-transition-content-id="${currentPage.title}"]`;
 
+    globalState.savedScrollPositions.set(currentContentId, window.scrollY);
+
     return new Promise((resolve) => {
       wrapper.appendChild(targetPage.DOM);
       transitionIndicator.classList.add("transition-indicator-active");
@@ -80,14 +81,7 @@ export const pageTransition = () => {
         window.history.pushState({}, "", targetPage.url);
       }
 
-      globalState.eventDispatcher.dispatchEvent({
-        type: "onPageLeave",
-        from: currentContentId,
-        to: targetContentId,
-        trigger,
-      });
-
-      setTimeout(() => {
+      const onFinish = () => {
         const elToRemove = document.body.querySelector(currentContentId);
 
         if (elToRemove) elToRemove.remove();
@@ -97,7 +91,15 @@ export const pageTransition = () => {
         window.scrollTo(0, 0);
 
         resolve();
-      }, 1200);
+      };
+
+      globalState.eventDispatcher.dispatchEvent({
+        type: "onPageLeave",
+        from: currentContentId,
+        to: targetContentId,
+        trigger,
+        resolveFn: onFinish,
+      });
     });
   };
 
@@ -126,6 +128,12 @@ export const pageTransition = () => {
       isPopping = false;
       document.title = targetPage.title;
 
+      document.body.classList.remove("disable-scrolling");
+      window.scrollTo(
+        0,
+        globalState.savedScrollPositions.get(targetContentId) || 0
+      );
+
       globalState.eventDispatcher.dispatchEvent({
         type: "onPageEnter",
         pageId: targetContentId,
@@ -149,7 +157,6 @@ export const pageTransition = () => {
     popTargetHref = window.location.href;
 
     document.body.classList.add("disable-scrolling");
-    savedScrollPositions.set(currentUrl.href, window.scrollY);
 
     if (!isPageCached(targetUrl.href)) {
       await myFetch({
@@ -160,9 +167,6 @@ export const pageTransition = () => {
 
     await beforeFetch(trigger);
     await afterFetch();
-
-    document.body.classList.remove("disable-scrolling");
-    window.scrollTo(0, savedScrollPositions.get(targetUrl.href) || 0);
   };
 
   const onPopstate = () => {

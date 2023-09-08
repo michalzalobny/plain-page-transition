@@ -1,4 +1,5 @@
 .case-study {
+  display: flex;
   &:not(:last-child) {
     padding-bottom: 50px;
   }
@@ -14,11 +15,12 @@
       flex-shrink: 0;
       width: 120px;
       position: relative;
+      overflow: hidden;
 
       &:before {
         content: "";
         display: block;
-        padding-top: 50%;
+        padding-top: 62.5%;
       }
 
       img {
@@ -38,4 +40,10 @@
       line-height: 1.2;
     }
   }
+}
+
+.figure-img-case-study--out {
+  transition: transform 0.8s var(--easing-1), opacity 0.8s ease-in-out;
+  opacity: 0;
+  transform: translateX(-100%);
 }

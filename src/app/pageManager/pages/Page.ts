@@ -7,6 +7,7 @@ export interface AnimateExit {
   fromId: string;
   toId: string;
   trigger: string | HTMLAnchorElement;
+  resolveFn: () => void;
 }
 
 export interface AnimateEnter {
@@ -34,7 +35,7 @@ export class Page {
   }
 
   onPageLeave = (e: CustomEvent) => {
-    const { from, to, trigger } = e as any;
+    const { from, to, trigger, resolveFn } = e as any;
 
     const fromEl = document.body.querySelector(from) as HTMLElement;
     const toEl = document.body.querySelector(to) as HTMLElement;
@@ -44,7 +45,7 @@ export class Page {
 
     if (!fromId || !toId) return console.error("No fromId or toId");
 
-    this.animateExit({ fromEl, toEl, fromId, toId, trigger });
+    this.animateExit({ fromEl, toEl, fromId, toId, trigger, resolveFn });
   };
 
   onPageEnter = (e: CustomEvent) => {

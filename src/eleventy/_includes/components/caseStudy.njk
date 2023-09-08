@@ -1,7 +1,7 @@
 <li class="case-study">
   <a class="case-study__link" href="/case-study/{{ study.url }}#dsd">
     <div class="case-study__wrapper">
-      <figure class="case-study__wrapper__figure">
+      <figure data-figure-id="{{study.title}}" class="case-study__wrapper__figure">
         <img src="{{ study.ogimage.thumb.url }}" alt="{{ study.title }}">
       </figure>
       <p data-animation="paragraph" class="case-study__wrapper__title">{{ study.title }}</p>
