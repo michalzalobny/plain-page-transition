@@ -38,7 +38,7 @@
 .transition-indicator-active {
   transition: transform 1.2s;
   transition-timing-function: var(--easing-1);
-  visibility: visible;
+  // visibility: visible;
   transform: scaleX(1);
 }
 

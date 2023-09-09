@@ -12,6 +12,7 @@
     align-items: center;
 
     &__figure {
+      will-change: transform;
       flex-shrink: 0;
       width: 120px;
       position: relative;
@@ -24,6 +25,7 @@
       }
 
       img {
+        opacity: 0;
         position: absolute;
         top: 0;
         left: 0;
@@ -42,8 +44,7 @@
   }
 }
 
-.figure-img-case-study--out {
-  transition: transform 0.8s var(--easing-1), opacity 0.8s ease-in-out;
-  opacity: 0;
-  transform: translateX(-100%);
-}
+// .figure-img-case-study--in {
+//   transition: opacity 0.8s ease-in-out;
+//   opacity: 1 !important;
+// }

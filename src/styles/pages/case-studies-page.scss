@@ -6,6 +6,7 @@
     flex-direction: column;
 
     &__figure {
+      will-change: transform;
       width: 100%;
       position: relative;
 

@@ -7,6 +7,7 @@ import { globalState } from "../../../globalState";
 
 export class LandingPage extends Page {
   _exitPageTween: Tween<{}> | null = null;
+  _testFig: HTMLElement | null = null;
 
   constructor() {
     super();
@@ -26,8 +27,6 @@ export class LandingPage extends Page {
         const elId = toEl.dataset.transitionContentId!.slice(0, -7);
 
         fig = fromEl.querySelector(`[data-figure-id="${elId}"]`) as HTMLElement;
-
-        // return console.log("trigger is not an anchor element");
       } else {
         fig = trigger.querySelector("figure")!;
       }
@@ -44,9 +43,24 @@ export class LandingPage extends Page {
       const fromScrollPos =
         globalState.savedScrollPositions.get(fromScrollId) || 0;
 
-      const transX = destFigRect.left - figRect.left;
+      const destTop = destFigRect.top + fromScrollPos - toScrollPos;
+      const currentTop = figRect.top;
+
+      const transX =
+        destFigRect.left -
+        figRect.left +
+        (destFigRect.width - figRect.width) / 2;
       const transY =
-        destFigRect.top - figRect.top + fromScrollPos - toScrollPos;
+        destTop - currentTop + (destFigRect.height - figRect.height) / 2;
+
+      const scale = destFigRect.width / figRect.width;
+
+      // console.log("transY", transY);
+
+      // console.log(
+      //   "destFigRect top",
+      //   destFigRect.top + fromScrollPos - toScrollPos
+      // );
 
       //select all figs on the fromEl
       const figs = fromEl.querySelectorAll("figure");
@@ -56,35 +70,33 @@ export class LandingPage extends Page {
       figsArr.forEach((f) => {
         const child = f.children[0] as HTMLElement;
         if (!child) return;
-        child.classList.add("figure-img-case-study--out");
+
+        child.style.opacity = "0";
+        child.style.transition =
+          "transform 0.8s var(--easing-1), opacity 0.8s ease-in-out";
+
+        child.style.transform = "translateX(-100%)";
       });
 
       if (this._exitPageTween) this._exitPageTween.stop();
 
       this._exitPageTween = new TWEEN.Tween({
-        height: figRect.height,
-        width: figRect.width,
+        scale: 1,
         transX: 0,
         transY: 0,
-        normalized: 0,
       })
         .to(
           {
-            height: destFigRect.height,
-            width: destFigRect.width,
+            scale,
             transX: transX,
             transY: transY,
-            normalized: 1,
           },
           1200
         )
         .delay(400)
         .easing(TWEEN.Easing.Exponential.InOut)
         .onUpdate((obj) => {
-          fig.style.width = `${obj.width}px`;
-          fig.style.height = `${obj.height}px`;
-
-          fig.style.transform = `translate(${obj.transX}px, ${obj.transY}px)`;
+          fig.style.transform = `translate3d(${obj.transX}px, ${obj.transY}px, 0px) scale(${obj.scale})`;
         })
         .start()
         .onComplete(() => {
@@ -109,7 +121,7 @@ export class LandingPage extends Page {
 
   animateEnter(props: AnimateEnter) {
     super.animateEnter(props);
-    const { el, pageId } = props;
+    const { el, pageId, comingFromId } = props;
 
     const paragraphs = el.querySelectorAll('[data-animation="paragraph"]');
 
@@ -122,6 +134,35 @@ export class LandingPage extends Page {
 
       window.requestAnimationFrame(() => {
         this._animatedParagraphs.forEach((p) => p.animateIn());
+      });
+
+      // Extract the content within double quotes using a regex match
+      let match = comingFromId?.match(/"([^"]+)"/);
+      let result = "";
+      if (match) {
+        result = match[1]; // The content inside the quotes
+        result = result.substring(0, result.length - 7); // Remove the last 9 characters
+      }
+
+      //find element that has comingFromId as data-transition-content-id
+      const fig = el.querySelector(
+        `[data-figure-id="${result}"]`
+      ) as HTMLElement;
+
+      //get all the figures
+      const figs = el.querySelectorAll("figure");
+      Array.from(figs).forEach((f, key) => {
+        if (key === 4) this._testFig = f as HTMLElement;
+        const child = f.children[0] as HTMLElement;
+        if (!child) return;
+
+        if (f === fig) {
+          child.style.opacity = "1";
+        } else {
+          child.style.opacity = "1";
+          child.style.transition =
+            "transform 0.8s var(--easing-1), opacity 0.8s ease-in-out";
+        }
       });
     }
   }

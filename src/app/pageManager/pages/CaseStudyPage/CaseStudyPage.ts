@@ -38,11 +38,17 @@ export class CaseStudyPage extends Page {
       const fromScrollPos =
         globalState.savedScrollPositions.get(fromScrollId) || 0;
 
-      // console.log("frrom", globalState.savedScrollPositions.get(scrollId));
+      const destTop = destFigRect.top + fromScrollPos - toScrollPos;
+      const currentTop = figRect.top;
 
-      const transX = destFigRect.left - figRect.left;
+      const transX =
+        destFigRect.left -
+        figRect.left +
+        (destFigRect.width - figRect.width) / 2;
       const transY =
-        destFigRect.top - figRect.top - toScrollPos + fromScrollPos;
+        destTop - currentTop + (destFigRect.height - figRect.height) / 2;
+
+      const scale = destFigRect.width / figRect.width;
 
       //select all figs on the fromEl
       const figs = fromEl.querySelectorAll("figure");
@@ -59,28 +65,25 @@ export class CaseStudyPage extends Page {
       if (this._exitPageTween) this._exitPageTween.stop();
 
       this._exitPageTween = new TWEEN.Tween({
-        width: figRect.width,
-        height: figRect.height,
+        scale: 1,
         transX: 0,
         transY: 0,
-        normalized: 0,
       })
         .to(
           {
-            width: destFigRect.width,
-            height: destFigRect.height,
+            scale: scale,
             transX: transX,
             transY: transY,
-            normalized: 1,
           },
           1200
         )
         .delay(400)
         .easing(TWEEN.Easing.Exponential.InOut)
         .onUpdate((obj) => {
-          fig.style.width = `${obj.width}px`;
-          fig.style.height = `${obj.height}px`;
-          fig.style.transform = `translate(${obj.transX}px, ${obj.transY}px)`;
+          // fig.style.width = `${obj.width}px`;
+          // fig.style.height = `${obj.height}px`;
+
+          fig.style.transform = `translate3d(${obj.transX}px, ${obj.transY}px, 0px) scale(${obj.scale})`;
         })
         .start()
         .onComplete(() => {

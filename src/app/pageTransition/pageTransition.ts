@@ -23,6 +23,9 @@ export const pageTransition = () => {
     "[data-transition-indicator]"
   )!;
 
+  let currentContentId = "";
+  let targetContentId = "";
+
   const initCache = () => {
     createCacheEntry({
       page: parseDom(document.documentElement.outerHTML),
@@ -33,7 +36,7 @@ export const pageTransition = () => {
   initCache();
 
   const currentPage = getPageFromCache(currentUrl.href)!;
-  const currentContentId = `[data-transition-content-id="${currentPage.title}"]`;
+  currentContentId = `[data-transition-content-id="${currentPage.title}"]`;
 
   globalState.eventDispatcher.dispatchEvent({
     type: "onPageEnter",
@@ -69,8 +72,8 @@ export const pageTransition = () => {
       return Promise.resolve();
     }
 
-    const targetContentId = `[data-transition-content-id="${targetPage.title}"]`;
-    const currentContentId = `[data-transition-content-id="${currentPage.title}"]`;
+    targetContentId = `[data-transition-content-id="${targetPage.title}"]`;
+    currentContentId = `[data-transition-content-id="${currentPage.title}"]`;
 
     globalState.savedScrollPositions.set(currentContentId, window.scrollY);
 
@@ -138,6 +141,7 @@ export const pageTransition = () => {
       globalState.eventDispatcher.dispatchEvent({
         type: "onPageEnter",
         pageId: targetContentId,
+        comingFrom: currentContentId,
       });
 
       resolve();

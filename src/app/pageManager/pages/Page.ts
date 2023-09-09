@@ -13,6 +13,7 @@ export interface AnimateExit {
 export interface AnimateEnter {
   el: HTMLElement;
   pageId: string;
+  comingFromId: string;
 }
 
 export class Page {
@@ -49,14 +50,14 @@ export class Page {
   };
 
   onPageEnter = (e: CustomEvent) => {
-    const { pageId } = e as any;
+    const { pageId, comingFrom } = e as any;
 
     const el = document.body.querySelector(pageId) as HTMLElement;
     const elId = el.dataset.pageName;
 
     if (!elId) return console.error("No elId");
 
-    this.animateEnter({ el, pageId: elId });
+    this.animateEnter({ el, pageId: elId, comingFromId: comingFrom });
   };
 
   animateExit(props: AnimateExit) {}
