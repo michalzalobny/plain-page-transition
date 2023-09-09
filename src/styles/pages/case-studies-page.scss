@@ -10,6 +10,7 @@
       will-change: transform;
       width: 280px;
       position: relative;
+      overflow: hidden;
 
       &:before {
         content: "";
@@ -32,13 +33,15 @@
       text-align: center;
       font-size: 25px;
       margin-bottom: 25px;
-      line-height: 1;
+      line-height: 1.4;
+      color: var(--foreground-rgb);
     }
 
     &__link {
       margin-top: 25px;
       font-size: 14px;
       line-height: 1.2;
+      color: var(--foreground-rgb);
     }
   }
 }
