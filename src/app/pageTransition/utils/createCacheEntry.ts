@@ -15,11 +15,11 @@ const cache: Map<string, CacheEntry> = new Map();
 
 export const createCacheEntry = (props: CreateCacheEntry) => {
   const { page, url } = props;
-  let content = page.querySelector("[data-transition-content-id]");
+  let content = page.querySelector("[data-transition-page-id]");
 
   if (!content) {
     console.error(
-      "No content found in page while creating cache entry - add a [data-transition-content-id] element to your page"
+      "No content found in page while creating cache entry - add a [data-transition-page-id] element to your page"
     );
 
     content = document.createElement("div");

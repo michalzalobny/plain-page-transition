@@ -41,8 +41,8 @@ export class Page {
     const fromEl = document.body.querySelector(from) as HTMLElement;
     const toEl = document.body.querySelector(to) as HTMLElement;
 
-    const fromId = fromEl.dataset.pageName;
-    const toId = toEl.dataset.pageName;
+    const fromId = fromEl.dataset.transitionPageName;
+    const toId = toEl.dataset.transitionPageName;
 
     if (!fromId || !toId) return console.error("No fromId or toId");
 
@@ -53,7 +53,7 @@ export class Page {
     const { pageId, comingFrom } = e as any;
 
     const el = document.body.querySelector(pageId) as HTMLElement;
-    const elId = el.dataset.pageName;
+    const elId = el.dataset.transitionPageName;
 
     if (!elId) return console.error("No elId");
 

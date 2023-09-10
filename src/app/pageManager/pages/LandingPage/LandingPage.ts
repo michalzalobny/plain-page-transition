@@ -24,7 +24,7 @@ export class LandingPage extends Page {
       let fig: HTMLElement;
 
       if (!(trigger instanceof HTMLAnchorElement)) {
-        const elId = toEl.dataset.transitionContentId!.slice(0, -7);
+        const elId = toEl.dataset.transitionPageId!.slice(0, -7);
 
         fig = fromEl.querySelector(`[data-figure-id="${elId}"]`) as HTMLElement;
       } else {
@@ -36,8 +36,8 @@ export class LandingPage extends Page {
       const destFig = toEl.querySelector("figure")!;
       const destFigRect = getBoundingRectCustom(destFig);
 
-      const toScrollId = `[data-transition-content-id="${toEl.dataset.transitionContentId}"]`;
-      const fromScrollId = `[data-transition-content-id="${fromEl.dataset.transitionContentId}"]`;
+      const toScrollId = `[data-transition-page-id="${toEl.dataset.transitionPageId}"]`;
+      const fromScrollId = `[data-transition-page-id="${fromEl.dataset.transitionPageId}"]`;
 
       const toScrollPos = globalState.savedScrollPositions.get(toScrollId) || 0;
       const fromScrollPos =
@@ -144,7 +144,7 @@ export class LandingPage extends Page {
         result = result.substring(0, result.length - 7); // Remove the last 9 characters
       }
 
-      //find element that has comingFromId as data-transition-content-id
+      //find element that has comingFromId as data-transition-page-id
       const fig = el.querySelector(
         `[data-figure-id="${result}"]`
       ) as HTMLElement;

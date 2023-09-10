@@ -24,15 +24,15 @@ export class CaseStudyPage extends Page {
       const figRect = getBoundingRectCustom(fig);
 
       //Remove last 5 characters from the fromId
-      const elId = fromEl.dataset.transitionContentId!.slice(0, -7);
+      const elId = fromEl.dataset.transitionPageId!.slice(0, -7);
       //Find element inside toEl with data-figure-id=elId
       const destFig = toEl.querySelector(
         `[data-figure-id="${elId}"]`
       ) as HTMLElement;
       const destFigRect = getBoundingRectCustom(destFig);
 
-      const toScrollId = `[data-transition-content-id="${toEl.dataset.transitionContentId}"]`;
-      const fromScrollId = `[data-transition-content-id="${fromEl.dataset.transitionContentId}"]`;
+      const toScrollId = `[data-transition-page-id="${toEl.dataset.transitionPageId}"]`;
+      const fromScrollId = `[data-transition-page-id="${fromEl.dataset.transitionPageId}"]`;
 
       const toScrollPos = globalState.savedScrollPositions.get(toScrollId) || 0;
       const fromScrollPos =

@@ -11,14 +11,14 @@
         <title>{{title}}</title>
     </head>
     <body>
+        <div data-transition-indicator></div>
         <!-- Script to include all image urls to preload -->
         <script id="imagesToPreload" type="application/json">
             {{ collections.imagesToPreload | dump | safe }}
         </script>
         <main>
-            <div data-transition-indicator></div>
-            <div data-transition-main>
-                <div data-transition-content-id="{{title}}" data-page-name="{{pageName}}">
+            <div data-transition-wrapper>
+                <div data-transition-page-id="{{title}}" data-transition-page-name="{{transitionPageName}}">
                     {{content | safe}}
                 </div>
             </div>

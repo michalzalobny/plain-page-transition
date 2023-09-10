@@ -18,7 +18,7 @@ export const pageTransition = () => {
   let popTargetHref = "";
   let currentUrl = processUrl(window.location.href);
   let targetUrl = processUrl(window.location.href);
-  const wrapper = document.querySelector("[data-transition-main]")!;
+  const wrapper = document.querySelector("[data-transition-wrapper]")!;
   const transitionIndicator = document.querySelector(
     "[data-transition-indicator]"
   )!;
@@ -36,7 +36,7 @@ export const pageTransition = () => {
   initCache();
 
   const currentPage = getPageFromCache(currentUrl.href)!;
-  currentContentId = `[data-transition-content-id="${currentPage.title}"]`;
+  currentContentId = `[data-transition-page-id="${currentPage.title}"]`;
 
   globalState.eventDispatcher.dispatchEvent({
     type: "onPageEnter",
@@ -72,8 +72,8 @@ export const pageTransition = () => {
       return Promise.resolve();
     }
 
-    targetContentId = `[data-transition-content-id="${targetPage.title}"]`;
-    currentContentId = `[data-transition-content-id="${currentPage.title}"]`;
+    targetContentId = `[data-transition-page-id="${targetPage.title}"]`;
+    currentContentId = `[data-transition-page-id="${currentPage.title}"]`;
 
     globalState.savedScrollPositions.set(currentContentId, window.scrollY);
 
@@ -117,7 +117,7 @@ export const pageTransition = () => {
       return Promise.resolve();
     }
 
-    const targetContentId = `[data-transition-content-id="${targetPage.title}"]`;
+    const targetContentId = `[data-transition-page-id="${targetPage.title}"]`;
 
     return new Promise((resolve) => {
       // entry.renderer.update();
