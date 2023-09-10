@@ -9,6 +9,7 @@ import { parseDom } from "./utils/parseDom";
 import { findCurrentTarget } from "./utils/findCurrentTarget";
 import { globalState } from "../globalState";
 import { generateHTMLContent } from "./utils/generateHTMLContent";
+import { Trigger, NavigateTo } from "./pageTransition.types";
 
 export const pageTransition = () => {
   const activePromises = new Map();
@@ -61,9 +62,7 @@ export const pageTransition = () => {
     }
   };
 
-  const beforeFetch = (
-    trigger: string | HTMLAnchorElement = ""
-  ): Promise<void> => {
+  const beforeFetch = (trigger: Trigger): Promise<void> => {
     const targetPage = getPageFromCache(targetUrl.href);
     const currentPage = getPageFromCache(currentUrl.href);
 
@@ -148,10 +147,7 @@ export const pageTransition = () => {
     });
   };
 
-  const navigateTo = async (
-    url: string,
-    trigger: string | HTMLAnchorElement = ""
-  ): Promise<void> => {
+  const navigateTo = async ({ trigger, url }: NavigateTo): Promise<void> => {
     if (isTransitioning) {
       throw new Error("Transition is in progress - no interruption allowed");
     }
@@ -194,7 +190,7 @@ export const pageTransition = () => {
 
     isPopping = true;
 
-    navigateTo(window.location.href, "popstate");
+    navigateTo({ url: window.location.href, trigger: "popstate" });
   };
 
   const onClick = (e: Event) => {
@@ -210,7 +206,7 @@ export const pageTransition = () => {
     }
 
     e.preventDefault();
-    navigateTo(clickedUrl.raw, currentTarget);
+    navigateTo({ url: clickedUrl.raw, trigger: currentTarget });
   };
 
   wrapper.addEventListener("click", onClick);
