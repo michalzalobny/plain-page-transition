@@ -21,16 +21,8 @@ export class LandingPage extends Page {
   animateLeave(props: AnimateLeave) {
     super.animateLeave(props);
 
-    const {
-      fromPageEl,
-      fromPage,
-      fromPageName,
-      toPage,
-      toPageEl,
-      toPageName,
-      trigger,
-      resolveFn,
-    } = props;
+    const { fromPageEl, fromPage, toPage, toPageEl, trigger, resolveFn } =
+      props;
 
     this._animatedParagraphs.forEach((p) => p.animateOut());
 
@@ -129,7 +121,7 @@ export class LandingPage extends Page {
 
   animateEnter(props: AnimateEnter) {
     super.animateEnter(props);
-    const { fromPage, toPage, toPageEl, toPageName } = props;
+    const { fromPage, toPage, toPageEl } = props;
 
     const paragraphs = toPageEl.querySelectorAll(
       '[data-animation="paragraph"]'

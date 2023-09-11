@@ -20,16 +20,8 @@ export class CaseStudyPage extends Page {
   animateLeave(props: AnimateLeave) {
     super.animateLeave(props);
 
-    const {
-      fromPage,
-      fromPageEl,
-      fromPageName,
-      resolveFn,
-      toPage,
-      toPageEl,
-      toPageName,
-      trigger,
-    } = props;
+    const { fromPage, fromPageEl, resolveFn, toPage, toPageEl, trigger } =
+      props;
 
     this._animatedParagraphs.forEach((p) => p.animateOut());
 

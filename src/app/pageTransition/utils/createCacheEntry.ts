@@ -24,6 +24,7 @@ export const createCacheEntry = (props: CreateCacheEntry) => {
     url: processedUrl.href,
     title: page.title,
     pageId: content.dataset.transitionPageId || "",
+    pageName: content.dataset.transitionPageName || "",
   };
 
   cache.set(processedUrl.href, entry);

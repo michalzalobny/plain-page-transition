@@ -36,22 +36,16 @@ export class Page {
   onPageLeave = (e: PageTransitionLeaveEvent) => {
     const { fromPage, toPage, resolveFn, trigger } = e;
 
-    const { pageEl: fromPageEl, pageName: fromPageName } = getTransitionPage(
-      fromPage.pageId
-    );
+    const fromPageEl = getTransitionPage(fromPage.pageId);
 
-    const { pageEl: toPageEl, pageName: toPageName } = getTransitionPage(
-      toPage.pageId
-    );
+    const toPageEl = getTransitionPage(toPage.pageId);
 
-    if (fromPageName === this._pageName) {
+    if (fromPage.pageName === this._pageName) {
       this.animateLeave({
         fromPage,
         toPage,
         fromPageEl,
         toPageEl,
-        fromPageName,
-        toPageName,
         trigger,
         resolveFn,
       });
@@ -61,16 +55,13 @@ export class Page {
   onPageEnter = (e: PageTransitionEnterEvent) => {
     const { fromPage, toPage } = e;
 
-    const { pageEl: toPageEl, pageName: toPageName } = getTransitionPage(
-      toPage.pageId
-    );
+    const toPageEl = getTransitionPage(toPage.pageId);
 
-    if (toPageName === this._pageName) {
+    if (toPage.pageName === this._pageName) {
       this.animateEnter({
         fromPage,
         toPage,
         toPageEl,
-        toPageName,
       });
     }
   };

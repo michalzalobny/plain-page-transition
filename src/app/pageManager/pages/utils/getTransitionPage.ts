@@ -8,12 +8,5 @@ export const getTransitionPage = (pageId: string) => {
     pageEl = document.createElement("div");
   }
 
-  let pageName = pageEl?.dataset.transitionPageName;
-
-  if (!pageName) {
-    pageName = "";
-    console.error(`No pageName for ${pageId}`);
-  }
-
-  return { pageEl, pageName };
+  return pageEl;
 };

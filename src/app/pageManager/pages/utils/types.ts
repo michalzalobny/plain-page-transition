@@ -4,7 +4,6 @@ export interface AnimateEnter {
   fromPage: CacheEntry;
   toPage: CacheEntry;
   toPageEl: HTMLElement;
-  toPageName: string;
 }
 
 export interface AnimateLeave {
@@ -12,8 +11,6 @@ export interface AnimateLeave {
   toPage: CacheEntry;
   fromPageEl: HTMLElement;
   toPageEl: HTMLElement;
-  fromPageName: string;
-  toPageName: string;
   trigger: string | HTMLAnchorElement;
   resolveFn: () => void;
 }

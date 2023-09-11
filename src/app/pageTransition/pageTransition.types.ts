@@ -10,4 +10,5 @@ export interface CacheEntry {
   title: string;
   url: string;
   pageId: string;
+  pageName: string;
 }
