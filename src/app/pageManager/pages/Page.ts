@@ -71,6 +71,6 @@ export class Page {
   animateEnter(props: AnimateEnter) {}
 
   onResize() {
-    this._animatedParagraphs.forEach((p) => p.onResize());
+    // this._animatedParagraphs.forEach((p) => p.onResize());
   }
 }
