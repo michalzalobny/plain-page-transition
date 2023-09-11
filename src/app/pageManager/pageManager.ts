@@ -5,8 +5,8 @@ let landingPage: LandingPage;
 let caseStudyPage: CaseStudyPage;
 
 export const pageManager = () => {
-  landingPage = new LandingPage();
-  caseStudyPage = new CaseStudyPage();
+  landingPage = new LandingPage({ pageName: "landing" });
+  caseStudyPage = new CaseStudyPage({ pageName: "case-study" });
 };
 
 export const resizePages = () => {

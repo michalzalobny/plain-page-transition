@@ -2,8 +2,9 @@
 layout: "layouts/base.njk"
 permalink: case-study/{{caseStudy.url}}/index.html
 eleventyComputed:
-  title: "{{ caseStudy.title }} | Case"
+  title: "{{ caseStudy.title }} | Case Study"
   transitionPageName: "case-study"
+  transitionPageId: "{{ caseStudy.title }}"
 pagination:
   data: caseStudies
   size: 1

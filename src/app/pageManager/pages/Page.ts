@@ -1,25 +1,23 @@
 import { globalState } from "../../globalState";
 import { Paragraph } from "../../utils/Paragraph";
+import { getTransitionPage } from "./utils/getTransitionPage";
+import {
+  AnimateEnter,
+  AnimateLeave,
+  PageTransitionEnterEvent,
+  PageTransitionLeaveEvent,
+} from "./utils/types";
 
-export interface AnimateExit {
-  fromEl: HTMLElement;
-  toEl: HTMLElement;
-  fromId: string;
-  toId: string;
-  trigger: string | HTMLAnchorElement;
-  resolveFn: () => void;
-}
-
-export interface AnimateEnter {
-  el: HTMLElement;
-  pageId: string;
-  comingFromId: string;
+interface Constructor {
+  pageName: string;
 }
 
 export class Page {
   _animatedParagraphs: Paragraph[] = [];
+  _pageName = ""; //It has to be consistent data-transition-page-name="{{transitionPageName}}" for a given page
 
-  constructor() {
+  constructor(props: Constructor) {
+    this._pageName = props.pageName;
     this._addListeners();
   }
 
@@ -35,32 +33,49 @@ export class Page {
     );
   }
 
-  onPageLeave = (e: CustomEvent) => {
-    const { from, to, trigger, resolveFn } = e as any;
+  onPageLeave = (e: PageTransitionLeaveEvent) => {
+    const { fromPage, toPage, resolveFn, trigger } = e;
 
-    const fromEl = document.body.querySelector(from) as HTMLElement;
-    const toEl = document.body.querySelector(to) as HTMLElement;
+    const { pageEl: fromPageEl, pageName: fromPageName } = getTransitionPage(
+      fromPage.pageId
+    );
 
-    const fromId = fromEl.dataset.transitionPageName;
-    const toId = toEl.dataset.transitionPageName;
+    const { pageEl: toPageEl, pageName: toPageName } = getTransitionPage(
+      toPage.pageId
+    );
 
-    if (!fromId || !toId) return console.error("No fromId or toId");
-
-    this.animateExit({ fromEl, toEl, fromId, toId, trigger, resolveFn });
+    if (fromPageName === this._pageName) {
+      this.animateLeave({
+        fromPage,
+        toPage,
+        fromPageEl,
+        toPageEl,
+        fromPageName,
+        toPageName,
+        trigger,
+        resolveFn,
+      });
+    }
   };
 
-  onPageEnter = (e: CustomEvent) => {
-    const { pageId, comingFrom } = e as any;
+  onPageEnter = (e: PageTransitionEnterEvent) => {
+    const { fromPage, toPage } = e;
 
-    const el = document.body.querySelector(pageId) as HTMLElement;
-    const elId = el.dataset.transitionPageName;
+    const { pageEl: toPageEl, pageName: toPageName } = getTransitionPage(
+      toPage.pageId
+    );
 
-    if (!elId) return console.error("No elId");
-
-    this.animateEnter({ el, pageId: elId, comingFromId: comingFrom });
+    if (toPageName === this._pageName) {
+      this.animateEnter({
+        fromPage,
+        toPage,
+        toPageEl,
+        toPageName,
+      });
+    }
   };
 
-  animateExit(props: AnimateExit) {}
+  animateLeave(props: AnimateLeave) {}
 
   animateEnter(props: AnimateEnter) {}
 

@@ -1,10 +1,5 @@
 import { processUrl } from "./processUrl";
-
-interface CacheEntry {
-  htmlContent: string;
-  title: string;
-  url: string;
-}
+import { CacheEntry } from "../pageTransition.types";
 
 interface CreateCacheEntry {
   page: Document;
@@ -15,13 +10,10 @@ const cache: Map<string, CacheEntry> = new Map();
 
 export const createCacheEntry = (props: CreateCacheEntry) => {
   const { page, url } = props;
-  let content = page.querySelector("[data-transition-page-id]");
+  let content = page.querySelector("[data-transition-page-id]") as HTMLElement;
 
   if (!content) {
-    console.error(
-      "No content found in page while creating cache entry - add a [data-transition-page-id] element to your page"
-    );
-
+    console.error("Content not found - add [data-transition-page-id] to page");
     content = document.createElement("div");
   }
 
@@ -31,6 +23,7 @@ export const createCacheEntry = (props: CreateCacheEntry) => {
     htmlContent: content.outerHTML,
     url: processedUrl.href,
     title: page.title,
+    pageId: content.dataset.transitionPageId || "",
   };
 
   cache.set(processedUrl.href, entry);
@@ -38,14 +31,12 @@ export const createCacheEntry = (props: CreateCacheEntry) => {
 
 export const getPageFromCache = (url: string) => {
   const processedUrl = processUrl(url);
-
   const entry = cache.get(processedUrl.href);
 
   if (!entry) {
     console.error(`No entry found in cache: ${processedUrl.href}`);
     return null;
   }
-
   return entry;
 };
 

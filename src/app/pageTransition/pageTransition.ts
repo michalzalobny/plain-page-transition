@@ -9,40 +9,40 @@ import { parseDom } from "./utils/parseDom";
 import { findCurrentTarget } from "./utils/findCurrentTarget";
 import { globalState } from "../globalState";
 import { generateHTMLContent } from "./utils/generateHTMLContent";
-import { Trigger, NavigateTo } from "./pageTransition.types";
+import { Trigger, NavigateTo, CacheEntry } from "./pageTransition.types";
 
 export const pageTransition = () => {
   const activePromises = new Map();
 
+  const wrapper = document.querySelector("[data-transition-wrapper]")!;
+
   let isTransitioning = false;
   let isPopping = false;
   let popTargetHref = "";
+
   let currentUrl = processUrl(window.location.href);
   let targetUrl = processUrl(window.location.href);
-  const wrapper = document.querySelector("[data-transition-wrapper]")!;
-  const transitionIndicator = document.querySelector(
-    "[data-transition-indicator]"
-  )!;
 
-  let currentContentId = "";
-  let targetContentId = "";
+  let currentPage: CacheEntry | null = null;
+  let targetPage: CacheEntry | null = null;
 
-  const initCache = () => {
+  const init = () => {
     createCacheEntry({
       page: parseDom(document.documentElement.outerHTML),
       url: currentUrl.href,
     });
+
+    currentPage = getPageFromCache(currentUrl.href);
+    targetPage = getPageFromCache(currentUrl.href);
+
+    globalState.eventDispatcher.dispatchEvent({
+      type: "onPageEnter",
+      fromPage: currentPage,
+      toPage: targetPage,
+    });
   };
 
-  initCache();
-
-  const currentPage = getPageFromCache(currentUrl.href)!;
-  currentContentId = `[data-transition-page-id="${currentPage.title}"]`;
-
-  globalState.eventDispatcher.dispatchEvent({
-    type: "onPageEnter",
-    pageId: currentContentId,
-  });
+  init();
 
   const onPrefetch = (e: Event) => {
     const currentTarget = findCurrentTarget(e);
@@ -63,32 +63,26 @@ export const pageTransition = () => {
   };
 
   const beforeFetch = (trigger: Trigger): Promise<void> => {
-    const targetPage = getPageFromCache(targetUrl.href);
-    const currentPage = getPageFromCache(currentUrl.href);
-
-    if (!targetPage || !currentPage) {
-      console.error("No target or current page found in cache");
-      return Promise.resolve();
-    }
-
-    targetContentId = `[data-transition-page-id="${targetPage.title}"]`;
-    currentContentId = `[data-transition-page-id="${currentPage.title}"]`;
-
-    globalState.savedScrollPositions.set(currentContentId, window.scrollY);
-
     return new Promise((resolve) => {
+      targetPage = getPageFromCache(targetUrl.href);
+      currentPage = getPageFromCache(currentUrl.href);
+
+      if (!targetPage || !currentPage) {
+        console.error("No target or current page found in cache");
+        return Promise.resolve();
+      }
+      globalState.savedScrollPositions.set(currentPage.pageId, window.scrollY);
       wrapper.appendChild(generateHTMLContent(targetPage.htmlContent));
-      transitionIndicator.classList.add("transition-indicator-active");
 
       if (trigger !== "popstate") {
         window.history.pushState({}, "", targetPage.url);
       }
 
       const onFinish = () => {
-        const elToRemove = document.body.querySelector(currentContentId);
-
+        const elToRemove = document.body.querySelector(
+          `[data-transition-page-id="${currentPage?.pageId}"]`
+        );
         if (elToRemove) elToRemove.remove();
-        transitionIndicator.classList.remove("transition-indicator-active");
 
         //scroll document to top
         window.scrollTo(0, 0);
@@ -98,8 +92,8 @@ export const pageTransition = () => {
 
       globalState.eventDispatcher.dispatchEvent({
         type: "onPageLeave",
-        from: currentContentId,
-        to: targetContentId,
+        fromPage: currentPage,
+        toPage: targetPage,
         trigger,
         resolveFn: onFinish,
       });
@@ -110,37 +104,29 @@ export const pageTransition = () => {
     currentUrl = targetUrl;
     popTargetHref = currentUrl.href;
 
-    const targetPage = getPageFromCache(targetUrl.href);
-    if (!targetPage) {
-      console.error("No target page found in cache");
-      return Promise.resolve();
-    }
-
-    const targetContentId = `[data-transition-page-id="${targetPage.title}"]`;
-
     return new Promise((resolve) => {
-      // entry.renderer.update();
+      targetPage = getPageFromCache(targetUrl.href);
 
-      // E.emit("NAVIGATE_IN", {
-      //   from: this.currentCacheEntry,
-      //   to: entry,
-      //   trigger,
-      // });
+      if (!targetPage || !currentPage) {
+        console.error("No target page found in cache");
+        return Promise.resolve();
+      }
 
       isTransitioning = false;
       isPopping = false;
       document.title = targetPage.title;
 
       document.body.classList.remove("disable-scrolling");
+
       window.scrollTo(
         0,
-        globalState.savedScrollPositions.get(targetContentId) || 0
+        globalState.savedScrollPositions.get(targetPage.pageId) || 0
       );
 
       globalState.eventDispatcher.dispatchEvent({
         type: "onPageEnter",
-        pageId: targetContentId,
-        comingFrom: currentContentId,
+        fromPage: currentPage,
+        toPage: targetPage,
       });
 
       resolve();
