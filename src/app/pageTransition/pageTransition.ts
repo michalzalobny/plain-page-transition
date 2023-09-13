@@ -74,11 +74,11 @@ export const pageTransition = () => {
       globalState.savedScrollPositions.set(currentPage.pageId, window.scrollY);
       wrapper.appendChild(generateHTMLContent(targetPage.htmlContent));
 
-      if (trigger !== "popstate") {
-        window.history.pushState({}, "", targetPage.url);
-      }
-
       const onFinish = () => {
+        if (trigger !== "popstate") {
+          window.history.pushState({}, "", targetPage.url);
+        }
+
         const elToRemove = document.body.querySelector(
           `[data-transition-page-id="${currentPage?.pageId}"]`
         );
